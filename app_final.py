@@ -152,6 +152,12 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         padding: 40px !important;
         margin-top: 20px;
     }}
+    @media (max-width: 768px) {{
+        .block-container {{
+            padding: 15px !important;
+            margin-top: 5px !important;
+        }}
+    }}
     .stApp, .stApp p, .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6, .stApp span, .stApp li {{
         color: {text_color} !important;
     }}
@@ -170,7 +176,7 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4) !important;
     }}
     /* Buttons */
-    .stButton > button {{
+    .stButton > button, [data-testid="baseButton-formSubmit"] {{
         background: linear-gradient(45deg, #8b5cf6, #3b82f6, #d946ef) !important;
         background-size: 200% auto !important;
         color: white !important;
@@ -180,7 +186,10 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         transition: 0.4s !important;
         text-transform: uppercase;
     }}
-    .stButton > button:hover {{
+    .stButton > button *, [data-testid="baseButton-formSubmit"] * {{
+        color: white !important;
+    }}
+    .stButton > button:hover, [data-testid="baseButton-formSubmit"]:hover {{
         background-position: right center !important;
         transform: scale(1.02) !important;
     }}
@@ -217,6 +226,16 @@ st.markdown("""
         text-align: center;
         margin-bottom: 40px;
         font-weight: 400;
+    }
+    @media (max-width: 768px) {
+        .main-header {
+            font-size: 32px !important;
+            padding-top: 5px !important;
+        }
+        .sub-header {
+            font-size: 16px !important;
+            margin-bottom: 20px !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
