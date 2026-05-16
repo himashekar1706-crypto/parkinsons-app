@@ -199,6 +199,10 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         backdrop-filter: blur(20px) !important;
         border-right: 1px solid {border_color};
     }}
+    /* Hide Streamlit Default UI Elements */
+    #MainMenu {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
     </style>
     """
     st.markdown(page_bg_css, unsafe_allow_html=True)
