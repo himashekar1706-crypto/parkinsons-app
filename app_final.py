@@ -176,7 +176,7 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4) !important;
     }}
     /* Buttons */
-    .stButton > button, [data-testid="baseButton-formSubmit"] {{
+    div[data-testid="stButton"] button, div[data-testid="stFormSubmitButton"] button {
         background: linear-gradient(45deg, #8b5cf6, #3b82f6, #d946ef) !important;
         background-size: 200% auto !important;
         color: white !important;
@@ -185,14 +185,14 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         border-radius: 12px !important;
         transition: 0.4s !important;
         text-transform: uppercase;
-    }}
-    .stButton > button *, [data-testid="baseButton-formSubmit"] * {{
+    }
+    div[data-testid="stButton"] button *, div[data-testid="stFormSubmitButton"] button * {
         color: white !important;
-    }}
-    .stButton > button:hover, [data-testid="baseButton-formSubmit"]:hover {{
+    }
+    div[data-testid="stButton"] button:hover, div[data-testid="stFormSubmitButton"] button:hover {
         background-position: right center !important;
         transform: scale(1.02) !important;
-    }}
+    }
     /* Sidebar */
     [data-testid="stSidebar"] {{
         background: {card_bg} !important;
@@ -227,10 +227,12 @@ st.markdown("""
         margin-bottom: 40px;
         font-weight: 400;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         .main-header {
-            font-size: 32px !important;
+            font-size: 28px !important;
             padding-top: 5px !important;
+            line-height: 1.2 !important;
+            word-wrap: break-word !important;
         }
         .sub-header {
             font-size: 16px !important;
