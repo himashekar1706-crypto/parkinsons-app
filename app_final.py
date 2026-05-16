@@ -235,7 +235,7 @@ def load_assets():
         scaler_mfcc = pickle.load(f)
     with open('feature_names_mfcc.pkl', 'rb') as f:
         feature_names_mfcc = pickle.load(f)
-    df = pd.read_csv(r"C:\Users\HIMASHEKAR\OneDrive\Desktop\parkinson_disease.csv")
+    df = pd.read_csv("parkinsons.csv")
     if 'id' in df.columns:
         df = df.groupby('id').mean().reset_index()
     with open('background_data.pkl', 'rb') as f:
