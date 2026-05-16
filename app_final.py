@@ -365,10 +365,10 @@ def main_app():
         selected_features = feature_names
         
         if mode == "Demo: Healthy Patient (GFG Model)":
-            best_row = df[df['class'] == 0].iloc[0]
+            best_row = df[df['status'] == 0].iloc[0]
             best_prob = 1.0
-            for i in range(len(df[df['class'] == 0])):
-                row = df[df['class'] == 0].iloc[i]
+            for i in range(len(df[df['status'] == 0])):
+                row = df[df['status'] == 0].iloc[i]
                 x = pd.DataFrame([row[feature_names].values], columns=feature_names)
                 prob = model.predict_proba(scaler.transform(x))[0][1]
                 if prob < best_prob:
@@ -377,10 +377,10 @@ def main_app():
             patient_row = best_row
             st.sidebar.success("Loaded data for a Healthy Patient.")
         else:
-            best_row = df[df['class'] == 1].iloc[0]
+            best_row = df[df['status'] == 1].iloc[0]
             best_prob = 0.0
-            for i in range(len(df[df['class'] == 1])):
-                row = df[df['class'] == 1].iloc[i]
+            for i in range(len(df[df['status'] == 1])):
+                row = df[df['status'] == 1].iloc[i]
                 x = pd.DataFrame([row[feature_names].values], columns=feature_names)
                 prob = model.predict_proba(scaler.transform(x))[0][1]
                 if prob > best_prob:
