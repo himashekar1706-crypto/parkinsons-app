@@ -124,8 +124,36 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
             dashBtn.innerHTML = '☰ Dashboard';
             dashBtn.style.cssText = 'position: fixed; top: 15px; left: 15px; z-index: 9999999; background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;';
             dashBtn.onclick = function() {{
-                const btn = parentDoc.querySelector('[data-testid="collapsedControl"]') || parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
-                if(btn) btn.click();
+                // Try to find the button that OPENS the sidebar
+                let openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
+                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]') ||
+                              parentDoc.querySelector('button[kind="header"]');
+                
+                // Try to find the button that CLOSES the sidebar
+                let closeBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]') || 
+                               parentDoc.querySelector('button[kind="headerNoPadding"]') ||
+                               parentDoc.querySelector('.stSidebar button[kind="header"]');
+
+                // Determine if sidebar is currently closed
+                let isClosed = true;
+                let sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+                if (sidebar) {{
+                    isClosed = sidebar.getAttribute('aria-expanded') === 'false';
+                }} else if (openBtn && window.getComputedStyle(openBtn).display !== 'none') {{
+                    isClosed = true;
+                }} else if (closeBtn) {{
+                    isClosed = false;
+                }}
+
+                if (isClosed && openBtn) {{
+                    openBtn.click();
+                }} else if (!isClosed && closeBtn) {{
+                    closeBtn.click();
+                }} else {{
+                    // Fallback: just try clicking whatever we found
+                    if (openBtn) openBtn.click();
+                    else if (closeBtn) closeBtn.click();
+                }}
             }};
             parentDoc.body.appendChild(dashBtn);
         }}
@@ -344,6 +372,26 @@ def login_page():
         st.markdown('</div>', unsafe_allow_html=True)
 
 def main_app():
+    # Force open sidebar on first load after login
+    if not st.session_state.get('sidebar_forced_open'):
+        st.session_state['sidebar_forced_open'] = True
+        js_force_open = """
+        <script>
+        setTimeout(function() {
+            const parentDoc = window.parent.document;
+            const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+            const isClosed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false';
+            if (isClosed) {
+                const openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
+                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]') ||
+                              parentDoc.querySelector('button[kind="header"]');
+                if (openBtn) openBtn.click();
+            }
+        }, 300); // slight delay to ensure DOM is ready
+        </script>
+        """
+        components.html(js_force_open, height=0, width=0)
+
     user_email = st.session_state.get('user_email', 'User')
     username = user_email.split('@')[0].capitalize() if '@' in user_email else 'User'
     st.sidebar.markdown(f"### 👤 Welcome, {username}")
