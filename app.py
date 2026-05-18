@@ -190,6 +190,31 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         backdrop-filter: blur(20px) !important;
         border-right: 1px solid {border_color};
     }}
+    /* Sidebar Toggle Button (Reopen Dashboard) - Covers Old and New Streamlit Versions */
+    [data-testid="collapsedControl"],
+    [data-testid="stSidebarCollapsedControl"] {{
+        z-index: 1000000 !important;
+        color: {text_color} !important;
+        background-color: {card_bg} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }}
+    
+    [data-testid="collapsedControl"] svg,
+    [data-testid="stSidebarCollapsedControl"] svg {{
+        fill: {text_color} !important;
+        color: {text_color} !important;
+    }}
+    
+    /* Ensure header doesn't block interactions */
+    [data-testid="stHeader"] {{
+        background: transparent !important;
+        z-index: 99999 !important;
+        visibility: visible !important;
+    }}
     </style>
     """
     st.markdown(page_bg_css, unsafe_allow_html=True)
@@ -298,7 +323,9 @@ def login_page():
         st.markdown('</div>', unsafe_allow_html=True)
 
 def main_app():
-    st.sidebar.markdown(f"### 👤 Welcome, Doctor")
+    user_email = st.session_state.get('user_email', 'User')
+    username = user_email.split('@')[0].capitalize() if '@' in user_email else 'User'
+    st.sidebar.markdown(f"### 👤 Welcome, {username}")
     if st.sidebar.button("Log Out"):
         st.session_state['logged_in'] = False
         st.rerun()
