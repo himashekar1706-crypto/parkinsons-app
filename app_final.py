@@ -124,22 +124,19 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
             dashBtn.innerHTML = '☰ Dashboard';
             dashBtn.style.cssText = 'position: fixed; top: 15px; left: 15px; z-index: 9999999; background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;';
             dashBtn.onclick = function() {{
-                // Try to find the button that OPENS the sidebar
+                // Try to find the exact button that OPENS the sidebar
                 let openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
-                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]') ||
-                              parentDoc.querySelector('button[kind="header"]');
+                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
                 
-                // Try to find the button that CLOSES the sidebar
-                let closeBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]') || 
-                               parentDoc.querySelector('button[kind="headerNoPadding"]') ||
-                               parentDoc.querySelector('.stSidebar button[kind="header"]');
+                // Try to find the exact button that CLOSES the sidebar
+                let closeBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]');
 
-                // Determine if sidebar is currently closed
-                let isClosed = true;
+                // If sidebar is closed, click open. If open, click close.
                 let sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+                let isClosed = true;
                 if (sidebar) {{
                     isClosed = sidebar.getAttribute('aria-expanded') === 'false';
-                }} else if (openBtn && window.getComputedStyle(openBtn).display !== 'none') {{
+                }} else if (openBtn) {{
                     isClosed = true;
                 }} else if (closeBtn) {{
                     isClosed = false;
@@ -150,9 +147,7 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
                 }} else if (!isClosed && closeBtn) {{
                     closeBtn.click();
                 }} else {{
-                    // Fallback: just try clicking whatever we found
-                    if (openBtn) openBtn.click();
-                    else if (closeBtn) closeBtn.click();
+                    console.error("Sidebar toggle buttons not found in DOM.");
                 }}
             }};
             parentDoc.body.appendChild(dashBtn);
@@ -383,8 +378,7 @@ def main_app():
             const isClosed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false';
             if (isClosed) {
                 const openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
-                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]') ||
-                              parentDoc.querySelector('button[kind="header"]');
+                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
                 if (openBtn) openBtn.click();
             }
         }, 300); // slight delay to ensure DOM is ready
