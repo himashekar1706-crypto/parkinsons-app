@@ -48,7 +48,7 @@ def get_video_base64(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode('utf-8')
 
-def set_local_video_background(video_path, color_mode="blue", theme="Dark", show_dash_btn=False):
+def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
     """
     Injects a native HTML5 video element using a base64 encoded local file.
     This GUARANTEES zero UI controls (no YouTube API involved) while maintaining
@@ -68,7 +68,6 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
         hue_filter = "sepia(100%) hue-rotate(180deg) saturate(300%)"
         
     opacity = "0.75" if theme in ["Dark", "Cyber"] else "0.35"
-    show_dash_js = "true" if show_dash_btn else "false"
 
     js = f"""
     <script>
@@ -114,49 +113,6 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
     
     // Apply the color filter based on the mode
     videoElem.style.filter = '{hue_filter} opacity({opacity})';
-    
-    // Custom Dashboard Button Logic
-    if ({show_dash_js}) {{
-        let dashBtn = parentDoc.getElementById('custom-dash-toggle-btn');
-        if (!dashBtn) {{
-            dashBtn = parentDoc.createElement('button');
-            dashBtn.id = 'custom-dash-toggle-btn';
-            dashBtn.innerHTML = '☰ Dashboard';
-            dashBtn.style.cssText = 'position: fixed; top: 15px; left: 15px; z-index: 9999999; background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;';
-            dashBtn.onclick = function() {{
-                // Try to find the exact button that OPENS the sidebar
-                let openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
-                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
-                
-                // Try to find the exact button that CLOSES the sidebar
-                let closeBtn = parentDoc.querySelector('[data-testid="stSidebarCollapseButton"]');
-
-                // If sidebar is closed, click open. If open, click close.
-                let sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
-                let isClosed = true;
-                if (sidebar) {{
-                    isClosed = sidebar.getAttribute('aria-expanded') === 'false';
-                }} else if (openBtn) {{
-                    isClosed = true;
-                }} else if (closeBtn) {{
-                    isClosed = false;
-                }}
-
-                if (isClosed && openBtn) {{
-                    openBtn.click();
-                }} else if (!isClosed && closeBtn) {{
-                    closeBtn.click();
-                }} else {{
-                    console.error("Sidebar toggle buttons not found in DOM.");
-                }}
-            }};
-            parentDoc.body.appendChild(dashBtn);
-        }}
-        dashBtn.style.display = 'block';
-    }} else {{
-        let dashBtn = parentDoc.getElementById('custom-dash-toggle-btn');
-        if (dashBtn) dashBtn.style.display = 'none';
-    }}
     </script>
     """
     components.html(js, height=0, width=0)
@@ -243,10 +199,25 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark", show
         backdrop-filter: blur(20px) !important;
         border-right: 1px solid {border_color};
     }}
-    /* Hide Streamlit Default UI Elements */
+    /* Hide Streamlit Default UI Elements Natively */
     #MainMenu {{visibility: hidden;}}
-    header {{visibility: hidden;}}
     footer {{visibility: hidden;}}
+    [data-testid="stToolbar"] {{visibility: hidden !important;}}
+    [data-testid="stDecoration"] {{display: none !important;}}
+    [data-testid="stHeader"] {{background: transparent !important;}}
+    
+    /* Make native sidebar toggle highly visible */
+    [data-testid="collapsedControl"], [data-testid="stSidebarCollapsedControl"] {{
+        z-index: 1000000 !important;
+        background-color: {card_bg} !important;
+        border-radius: 8px !important;
+        border: 1px solid {border_color} !important;
+        padding: 5px !important;
+    }}
+    [data-testid="collapsedControl"] svg, [data-testid="stSidebarCollapsedControl"] svg {{
+        fill: {text_color} !important;
+        color: {text_color} !important;
+    }}
     </style>
     """
     st.markdown(page_bg_css, unsafe_allow_html=True)
@@ -367,24 +338,6 @@ def login_page():
         st.markdown('</div>', unsafe_allow_html=True)
 
 def main_app():
-    # Force open sidebar on first load after login
-    if not st.session_state.get('sidebar_forced_open'):
-        st.session_state['sidebar_forced_open'] = True
-        js_force_open = """
-        <script>
-        setTimeout(function() {
-            const parentDoc = window.parent.document;
-            const sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
-            const isClosed = !sidebar || sidebar.getAttribute('aria-expanded') === 'false';
-            if (isClosed) {
-                const openBtn = parentDoc.querySelector('[data-testid="collapsedControl"]') || 
-                              parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
-                if (openBtn) openBtn.click();
-            }
-        }, 300); // slight delay to ensure DOM is ready
-        </script>
-        """
-        components.html(js_force_open, height=0, width=0)
 
     user_email = st.session_state.get('user_email', 'User')
     username = user_email.split('@')[0].capitalize() if '@' in user_email else 'User'
@@ -433,7 +386,7 @@ def main_app():
         bg_video = neuron_video_path
         bg_color = "blue"
 
-    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme=theme, show_dash_btn=True)
+    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme=theme)
 
     col1, col2 = st.columns([4, 1])
     with col1:
