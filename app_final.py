@@ -213,6 +213,9 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         border-radius: 8px !important;
         border: 1px solid {border_color} !important;
         padding: 5px !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }}
     [data-testid="collapsedControl"] svg, [data-testid="stSidebarCollapsedControl"] svg {{
         fill: {text_color} !important;
