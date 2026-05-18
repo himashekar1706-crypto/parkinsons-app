@@ -8,3 +8,4 @@ streamlit-lottie
 supabase
 shap
 openpyxl
+matplotlib
