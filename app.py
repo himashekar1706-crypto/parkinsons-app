@@ -48,7 +48,7 @@ def get_video_base64(path):
     with open(path, "rb") as f:
         return base64.b64encode(f.read()).decode('utf-8')
 
-def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
+def set_local_video_background(video_path, color_mode="blue", theme="Dark", show_dash_btn=False):
     """
     Injects a native HTML5 video element using a base64 encoded local file.
     This GUARANTEES zero UI controls (no YouTube API involved) while maintaining
@@ -68,6 +68,7 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         hue_filter = "sepia(100%) hue-rotate(180deg) saturate(300%)"
         
     opacity = "0.75" if theme in ["Dark", "Cyber"] else "0.35"
+    show_dash_js = "true" if show_dash_btn else "false"
 
     js = f"""
     <script>
@@ -113,6 +114,26 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
     
     // Apply the color filter based on the mode
     videoElem.style.filter = '{hue_filter} opacity({opacity})';
+    
+    // Custom Dashboard Button Logic
+    if ({show_dash_js}) {{
+        let dashBtn = parentDoc.getElementById('custom-dash-toggle-btn');
+        if (!dashBtn) {{
+            dashBtn = parentDoc.createElement('button');
+            dashBtn.id = 'custom-dash-toggle-btn';
+            dashBtn.innerHTML = '☰ Dashboard';
+            dashBtn.style.cssText = 'position: fixed; top: 15px; left: 15px; z-index: 9999999; background: linear-gradient(45deg, #8b5cf6, #3b82f6); color: white; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-family: sans-serif;';
+            dashBtn.onclick = function() {{
+                const btn = parentDoc.querySelector('[data-testid="collapsedControl"]') || parentDoc.querySelector('[data-testid="stSidebarCollapsedControl"]');
+                if(btn) btn.click();
+            }};
+            parentDoc.body.appendChild(dashBtn);
+        }}
+        dashBtn.style.display = 'block';
+    }} else {{
+        let dashBtn = parentDoc.getElementById('custom-dash-toggle-btn');
+        if (dashBtn) dashBtn.style.display = 'none';
+    }}
     </script>
     """
     components.html(js, height=0, width=0)
@@ -370,7 +391,7 @@ def main_app():
         bg_video = neuron_video_path
         bg_color = "blue"
 
-    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme=theme)
+    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme=theme, show_dash_btn=True)
 
     col1, col2 = st.columns([4, 1])
     with col1:
