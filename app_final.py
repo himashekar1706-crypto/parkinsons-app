@@ -341,26 +341,30 @@ def login_page():
         st.markdown('</div>', unsafe_allow_html=True)
 
 def main_app():
-
     user_email = st.session_state.get('user_email', 'User')
     username = user_email.split('@')[0].capitalize() if '@' in user_email else 'User'
-    st.sidebar.markdown(f"### 👤 Welcome, {username}")
-    if st.sidebar.button("Log Out"):
-        st.session_state['logged_in'] = False
-        st.rerun()
-    st.sidebar.markdown("---")
     
-    st.sidebar.title("Visual Settings")
-    theme = st.sidebar.selectbox("Select Theme", ["Dark", "Light", "Gold & White", "Silver & White", "Cyber"])
-    st.sidebar.markdown("---")
+    # Top Navigation Bar (Replacing the Sidebar)
+    st.markdown('<div class="glass-card" style="margin-bottom: 20px;">', unsafe_allow_html=True)
+    top_col1, top_col2, top_col3 = st.columns([2, 2, 1])
+    with top_col1:
+        st.markdown(f"#### 👤 Welcome, {username}")
+    with top_col2:
+        theme = st.selectbox("Theme:", ["Dark", "Light", "Gold & White", "Silver & White", "Cyber"], label_visibility="collapsed")
+    with top_col3:
+        if st.button("Log Out", use_container_width=True):
+            st.session_state['logged_in'] = False
+            st.rerun()
+            
+    st.markdown("---")
     
-    st.sidebar.title("Input Mode")
-    mode = st.sidebar.radio("Select Input Mode:", [
+    mode = st.radio("Navigation:", [
         "Upload Audio File",
         "Demo: Healthy Patient (GFG Model)", 
         "Demo: Parkinson's Patient (GFG Model)", 
         "Dataset Analysis & Performance"
-    ])
+    ], horizontal=True, label_visibility="collapsed")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # Clear prediction state when switching modes
     if 'current_mode' not in st.session_state or st.session_state['current_mode'] != mode:
@@ -405,7 +409,7 @@ def main_app():
     selected_features = None
 
     if mode in ["Demo: Healthy Patient (GFG Model)", "Demo: Parkinson's Patient (GFG Model)"]:
-        st.sidebar.info(f"Using Logistic Regression and {len(feature_names)} clinical features.")
+        st.info(f"Using Logistic Regression and {len(feature_names)} clinical features.")
         selected_model = model
         selected_scaler = scaler
         selected_features = feature_names
@@ -421,7 +425,7 @@ def main_app():
                     best_prob = prob
                     best_row = row
             patient_row = best_row
-            st.sidebar.success("Loaded data for a Healthy Patient.")
+            st.success("Loaded data for a Healthy Patient.")
         else:
             best_row = df[df['class'] == 1].iloc[0]
             best_prob = 0.0
@@ -433,13 +437,13 @@ def main_app():
                     best_prob = prob
                     best_row = row
             patient_row = best_row
-            st.sidebar.error("Loaded data for a Parkinson's Patient.")
+            st.error("Loaded data for a Parkinson's Patient.")
             
         input_data = pd.DataFrame([patient_row[feature_names].values], columns=feature_names)
         st.session_state['ready_to_predict'] = True
 
     elif mode == "Upload Audio File":
-        st.sidebar.info("Using the specialized MFCC XGBoost Model for audio files.")
+        st.info("Using the specialized MFCC XGBoost Model for audio files.")
         selected_model = model_mfcc
         selected_scaler = scaler_mfcc
         selected_features = feature_names_mfcc
@@ -656,3 +660,4 @@ if not st.session_state['logged_in']:
     login_page()
 else:
     main_app()
+
