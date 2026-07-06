@@ -382,13 +382,8 @@ def main_app():
 
     set_local_video_background(video_path=bg_video, color_mode=bg_color, theme="Dark")
 
-    col1, col2 = st.columns([4, 1])
-    with col1:
-        st.markdown('<div class="main-header" style="font-size: 38px;">Parkinson Disease Detection using AI & ML</div>', unsafe_allow_html=True)
-        st.markdown('<div class="sub-header">Advanced Neuro-Acoustic Machine Learning System</div>', unsafe_allow_html=True)
-    with col2:
-        if lottie_brain:
-            st_lottie(lottie_brain, height=120, key="brain_anim")
+    st.markdown('<div class="main-header" style="font-size: 38px; text-align: center;">Parkinson Disease Detection using AI & ML</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header" style="text-align: center;">Advanced Neuro-Acoustic Machine Learning System</div>', unsafe_allow_html=True)
 
     input_data = None
     selected_model = None
