@@ -467,7 +467,7 @@ def main_app():
                     fig_spec, ax_spec = plt.subplots(figsize=(8, 3))
                     
                     bg_col = 'none' # FIX MATPLOTLIB TRANSPARENCY BUG
-                    text_col = 'black' if "White" in theme or theme == "Light" else 'white'
+                    text_col = 'white'
                     
                     fig_spec.patch.set_facecolor(bg_col)
                     ax_spec.set_facecolor(bg_col)
