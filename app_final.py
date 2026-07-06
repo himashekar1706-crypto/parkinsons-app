@@ -333,18 +333,31 @@ def main_app():
     st.sidebar.markdown("---")
     
     st.sidebar.title("Navigation")
-    mode = st.sidebar.radio("Navigation:", [
-        "Upload Audio File",
-        "Demo: Healthy Patient (GFG Model)", 
-        "Demo: Parkinson's Patient (GFG Model)", 
-        "Dataset Analysis & Performance"
-    ], label_visibility="collapsed")
-
-    # Clear prediction state when switching modes
-    if 'current_mode' not in st.session_state or st.session_state['current_mode'] != mode:
-        st.session_state['current_mode'] = mode
-        if 'prediction' in st.session_state:
-            del st.session_state['prediction']
+    
+    if 'current_mode' not in st.session_state:
+        st.session_state['current_mode'] = "Upload Audio File"
+        
+    if st.sidebar.button("Upload Audio File", use_container_width=True):
+        st.session_state['current_mode'] = "Upload Audio File"
+        if 'prediction' in st.session_state: del st.session_state['prediction']
+        st.rerun()
+        
+    if st.sidebar.button("Demo: Healthy Patient", use_container_width=True):
+        st.session_state['current_mode'] = "Demo: Healthy Patient (GFG Model)"
+        if 'prediction' in st.session_state: del st.session_state['prediction']
+        st.rerun()
+        
+    if st.sidebar.button("Demo: Parkinson's Patient", use_container_width=True):
+        st.session_state['current_mode'] = "Demo: Parkinson's Patient (GFG Model)"
+        if 'prediction' in st.session_state: del st.session_state['prediction']
+        st.rerun()
+        
+    if st.sidebar.button("Dataset Analysis", use_container_width=True):
+        st.session_state['current_mode'] = "Dataset Analysis & Performance"
+        if 'prediction' in st.session_state: del st.session_state['prediction']
+        st.rerun()
+        
+    mode = st.session_state['current_mode']
 
     # Determine background video and color
     if mode == "Upload Audio File":
