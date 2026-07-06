@@ -199,28 +199,10 @@ def set_local_video_background(video_path, color_mode="blue", theme="Dark"):
         backdrop-filter: blur(20px) !important;
         border-right: 1px solid {border_color};
     }}
-    /* Hide Streamlit Default UI Elements Natively */
+    /* Hide Streamlit Default UI Elements Natively & Safely */
     #MainMenu {{visibility: hidden;}}
     footer {{visibility: hidden;}}
-    [data-testid="stToolbar"] {{visibility: hidden !important;}}
-    [data-testid="stDecoration"] {{display: none !important;}}
-    [data-testid="stHeader"] {{background: transparent !important;}}
-    
-    /* Make native sidebar toggle highly visible */
-    [data-testid="collapsedControl"], [data-testid="stSidebarCollapsedControl"] {{
-        z-index: 1000000 !important;
-        background-color: {card_bg} !important;
-        border-radius: 8px !important;
-        border: 1px solid {border_color} !important;
-        padding: 5px !important;
-        display: flex !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }}
-    [data-testid="collapsedControl"] svg, [data-testid="stSidebarCollapsedControl"] svg {{
-        fill: {text_color} !important;
-        color: {text_color} !important;
-    }}
+    .stDeployButton {{display: none !important;}}
     </style>
     """
     st.markdown(page_bg_css, unsafe_allow_html=True)
