@@ -344,27 +344,19 @@ def main_app():
     user_email = st.session_state.get('user_email', 'User')
     username = user_email.split('@')[0].capitalize() if '@' in user_email else 'User'
     
-    # Top Navigation Bar (Replacing the Sidebar)
-    st.markdown('<div class="glass-card" style="margin-bottom: 20px;">', unsafe_allow_html=True)
-    top_col1, top_col2, top_col3 = st.columns([2, 2, 1])
-    with top_col1:
-        st.markdown(f"#### 👤 Welcome, {username}")
-    with top_col2:
-        theme = st.selectbox("Theme:", ["Dark", "Light", "Gold & White", "Silver & White", "Cyber"], label_visibility="collapsed")
-    with top_col3:
-        if st.button("Log Out", use_container_width=True):
-            st.session_state['logged_in'] = False
-            st.rerun()
-            
-    st.markdown("---")
+    st.sidebar.markdown(f"### Welcome, {username}")
+    if st.sidebar.button("Log Out"):
+        st.session_state['logged_in'] = False
+        st.rerun()
+    st.sidebar.markdown("---")
     
-    mode = st.radio("Navigation:", [
+    st.sidebar.title("Navigation")
+    mode = st.sidebar.radio("Navigation:", [
         "Upload Audio File",
         "Demo: Healthy Patient (GFG Model)", 
         "Demo: Parkinson's Patient (GFG Model)", 
         "Dataset Analysis & Performance"
-    ], horizontal=True, label_visibility="collapsed")
-    st.markdown('</div>', unsafe_allow_html=True)
+    ], label_visibility="collapsed")
 
     # Clear prediction state when switching modes
     if 'current_mode' not in st.session_state or st.session_state['current_mode'] != mode:
@@ -393,7 +385,7 @@ def main_app():
         bg_video = neuron_video_path
         bg_color = "blue"
 
-    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme=theme)
+    set_local_video_background(video_path=bg_video, color_mode=bg_color, theme="Dark")
 
     col1, col2 = st.columns([4, 1])
     with col1:
@@ -450,7 +442,7 @@ def main_app():
         
         c1, c2 = st.columns([3, 1])
         with c1:
-            st.markdown("### 📁 Acoustic Analysis Portal")
+            st.markdown("### Acoustic Analysis Portal")
             st.markdown("<p>Upload patient voice recordings (.wav or .mp3) for instantaneous neuro-acoustic feature extraction.</p>", unsafe_allow_html=True)
         with c2:
             if lottie_wave:
