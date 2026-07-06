@@ -290,7 +290,7 @@ def login_page():
         
         with st.form("login_form"):
             email = st.text_input("Email Address", placeholder="doctor@clinic.com")
-            password = st.text_input("Password", type="password", placeholder="••••••••")
+            password = st.text_input("Password", type="password", placeholder="********")
             
             c_in, c_up = st.columns(2)
             with c_in:
@@ -466,7 +466,7 @@ def main_app():
                 mfcc_means = np.mean(mfccs, axis=1)
                 
                 input_data = pd.DataFrame([mfcc_means[1:]], columns=feature_names_mfcc)
-                st.success("✅ Successfully extracted acoustic features (Volume-Invariant).")
+                st.success("Successfully extracted acoustic features (Volume-Invariant).")
                 
                 with st.expander("View Mel Spectrogram Analysis", expanded=False):
                     fig_spec, ax_spec = plt.subplots(figsize=(8, 3))
@@ -486,14 +486,14 @@ def main_app():
                     st.pyplot(fig_spec)
                 
                 if is_clipping:
-                    st.warning("⚠️ Clipping detected. Signal may be saturated.")
+                    st.warning("Clipping detected. Signal may be saturated.")
                     
                 st.session_state['ready_to_predict'] = True
         else:
             st.session_state['ready_to_predict'] = False
 
     if mode == "Dataset Analysis & Performance":
-        st.subheader("📊 Comprehensive Dataset & Theory Intelligence")
+        st.subheader("Comprehensive Dataset & Theory Intelligence")
         
         t1, t2, t3, t4 = st.tabs(["Parkinson's Disease Theory", "Project Architecture", "Complete Results & Metrics", "Raw Data Explorer"])
         
@@ -510,7 +510,7 @@ def main_app():
             """)
         
         with t2:
-            st.markdown("### 🏗️ Dual-Model Architecture")
+            st.markdown("### Dual-Model Architecture")
             st.write("This application utilizes a dual-model approach to balance academic clinical datasets with real-world, noisy audio processing:")
             
             st.markdown("#### 1. GeeksForGeeks Clinical Pipeline (Logistic Regression)")
@@ -540,7 +540,7 @@ def main_app():
                     st_lottie(lottie_data, height=200, key="data_anim")
                     
         with t4:
-            st.markdown("### 🗃️ Raw Data Explorer")
+            st.markdown("### Raw Data Explorer")
             st.write(f"Displaying {len(df)} patient records with 30+ clinical acoustic features.")
             st.dataframe(df, use_container_width=True)
 
@@ -572,9 +572,9 @@ def main_app():
                     confidence = probabilities[int(prediction)] * 100
                     
                     if prediction == 1:
-                        st.markdown(f'<div class="prediction-box-pd">⚠️ Parkinson\'s Disease Detected<br><span style="font-size:16px; color:#fca5a5;">Model Confidence: {confidence:.2f}%</span></div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="prediction-box-pd">Parkinson\'s Disease Detected<br><span style="font-size:16px; color:#fca5a5;">Model Confidence: {confidence:.2f}%</span></div>', unsafe_allow_html=True)
                     else:
-                        st.markdown(f'<div class="prediction-box-healthy">✅ Healthy (No PD Detected)<br><span style="font-size:16px; color:#6ee7b7;">Model Confidence: {confidence:.2f}%</span></div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="prediction-box-healthy">Healthy (No PD Detected)<br><span style="font-size:16px; color:#6ee7b7;">Model Confidence: {confidence:.2f}%</span></div>', unsafe_allow_html=True)
                         
                     st.markdown("---")
                     st.write("**Save Record to Database**")
@@ -591,7 +591,7 @@ def main_app():
                                         "confidence_score": float(confidence)
                                     }
                                     supabase.table("diagnostic_records").insert(data).execute()
-                                    st.success("✅ Record securely saved to cloud database!")
+                                    st.success("Record securely saved to cloud database!")
                                 except Exception as e:
                                     st.error(f"Error saving to database. Ensure you ran the SQL command to create the table. Details: {e}")
                             else:
@@ -611,7 +611,7 @@ def main_app():
                 
                 fig, ax = plt.subplots(figsize=(8, 5))
                 bg_col = 'none' # FIX MATPLOTLIB TRANSPARENCY BUG
-                text_col = 'black' if "White" in theme or theme == "Light" else 'white'
+                text_col = 'white'
                 
                 fig.patch.set_facecolor(bg_col)
                 ax.set_facecolor(bg_col)
